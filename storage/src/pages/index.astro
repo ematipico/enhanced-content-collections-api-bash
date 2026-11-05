@@ -5,10 +5,10 @@ import { getCollection } from 'astro:content';
 export const prerender = false;
 
 // `content: false` leaves out `body` and `rendered`, so the driver only loads the data.
-const docs = (await getCollection('docs', undefined, { content: false })).sort(
+const docs = (await getCollection({ name: 'docs', content: false })).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const posts = await getCollection('blog', undefined, { content: false });
+const posts = await getCollection({ name: 'blog', content: false });
 ---
 
 <html lang="en">

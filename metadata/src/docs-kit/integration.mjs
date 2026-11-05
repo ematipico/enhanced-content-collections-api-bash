@@ -8,6 +8,22 @@ export default function docsKit() {
         const docs = collections.filter((collection) => collection.descriptors.docsKit === 'docs');
         logger.info(`Found docs collections: ${docs.map((collection) => collection.name).join(', ')}`);
       },
+      // Checks the entries of every docs-kit collection once the build is done.
+      'astro:build:done': async ({ collections, logger }) => {
+        const docs = collections.metadata.filter((collection) => collection.descriptors.docsKit === 'docs');
+        const pages = new Map();
+        let checked = 0;
+        for (const { name } of docs) {
+          for (const entry of await collections.entries(name, { content: false })) {
+            const page = `${name}/${entry.id}`;
+            const other = pages.get(entry.data.title);
+            if (other) logger.warn(`"${entry.data.title}" is the title of both ${other} and ${page}`);
+            pages.set(entry.data.title, page);
+            checked++;
+          }
+        }
+        logger.info(`Checked ${checked} docs pages`);
+      },
     },
   };
 }

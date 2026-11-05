@@ -4,8 +4,8 @@ Two small Astro apps to try the experimental features of the [enhanced content c
 
 | App | Feature | Flag | Preview of |
 | --- | --- | --- | --- |
-| [`storage/`](./storage) | Collection storage drivers | `experimental.collectionStorageDrivers` | [withastro/astro#18583](https://github.com/withastro/astro/pull/18583) |
-| [`metadata/`](./metadata) | Collection metadata | `experimental.collectionMetadata` | [withastro/astro#18596](https://github.com/withastro/astro/pull/18596) |
+| [`storage/`](./storage) | Collection storage drivers | `experimental.collectionStorageDrivers` | [withastro/astro#18632](https://github.com/withastro/astro/pull/18632) |
+| [`metadata/`](./metadata) | Collection metadata | `experimental.collectionMetadata` | [withastro/astro#18633](https://github.com/withastro/astro/pull/18633) |
 
 The apps are independent: each has its own dependencies, so install and run them one at a time.
 
@@ -27,15 +27,18 @@ Collections can keep their entries in a storage driver, read one entry at a time
 - `src/content.config.ts`: the `docs` collection is stored in a local SQLite file, `collections.db`, by `@astrojs/collection-storage-sqlite`. The `blog` collection has no `storage`, so it stays bundled.
 - `src/pages/index.astro`: rendered on demand. It lists both collections with `{ content: false }`, which leaves out `body` and `rendered`.
 - `src/pages/docs/[id].astro`: rendered on demand, reading one entry from SQLite.
-- `src/pages/blog/[id].astro`: prerendered. `getStaticPaths()` lists the posts with `{ content: false }`.
+- `src/pages/blog/[id].astro`: prerendered. `getStaticPaths()` lists the posts with `getCollection({ name: 'blog', content: false })`.
+- `src/integrations/keep-snapshots.mjs`: an integration that keeps the 3 most recent build snapshots, and deletes older ones in the `astro:build:done` hook, through `collections.storage`.
 
 Things to try:
 
-- Edit a page in `src/docs/` while `pnpm dev` runs. Each change is written to a new snapshot.
+- Edit a page in `src/docs/` while `pnpm dev` runs. The dev server writes a single snapshot, again after each change.
 - Look inside the database: `sqlite3 collections.db "select * from astro_collection_snapshots"`.
 - Run `pnpm build`, change a doc, build again, and check that each build's server only reads its own snapshot.
+- Build more than 3 times, and check that `keep-snapshots` deletes the oldest build snapshots, but never the dev server's.
+- Make `keep-snapshots` delete the snapshot the build just wrote (`storage.snapshot`): Astro refuses, as the server reads it.
 - Pass `render()` an entry read with `{ content: false }`.
-- Store a collection in a remote [Turso](https://turso.tech) database: `sqlite({ url: 'libsql://…', authTokenEnv: 'TURSO_TOKEN' })`. The token must be in the environment of the process: a `.env` file isn't enough.
+- Store a collection in a remote [Turso](https://turso.tech) database: `sqlite({ url: 'libsql://…', authTokenEnv: 'TURSO_TOKEN' })`. The driver reads the token with `getSecret()` from `astro:env/server`, so at build time it can come from a `.env` file.
 - Write your own driver, and check it with `createStorageDriverTests()` from `astro/content/storage-driver-tests`.
 
 `@libsql/client` is a direct dependency, as the driver requires: the production server only leaves it out of the bundle when it can find it from the project, and libSQL can't load its native binding from a bundle. pnpm also warns about an unmet `astro` peer: the preview of the driver expects the version of Astro it will be released with.
@@ -45,7 +48,7 @@ Things to try:
 Code can recognize a collection by its descriptors without knowing its name. That's useful for libraries that ship their own loaders. The app contains a tiny imaginary library, "docs-kit", in `src/docs-kit/`:
 
 - `loader.ts`: a loader declaring the descriptor `{ docsKit: 'docs' }`.
-- `integration.mjs`: logs the docs-kit collections from the `astro:collections:resolved` hook, at startup and when the content config changes.
+- `integration.mjs`: logs the docs-kit collections from the `astro:collections:resolved` hook, at startup and when the content config changes. After a build, it reads their entries in the `astro:build:done` hook, with `collections.entries()`, and warns about pages sharing a title.
 - `remark.mjs`: a remark plugin that reads `file.data.astro.collection` and adds a banner to docs-kit entries, both Markdown and MDX.
 - `collections.ts`: finds the docs-kit collections with `getCollectionsMetadata()`, using a type guard so their entries are typed.
 
@@ -63,6 +66,7 @@ Things to try:
 - Override a loader descriptor with the `descriptors` option of `defineCollection()`.
 - Check the types: hover `descriptors` in your editor, or return a value that isn't serializable from a descriptor.
 - Use the same file in two collections: Markdown plugins see `file.data.astro.collection` as `undefined`.
+- Give a guide the title of the reference page and run `pnpm build`: docs-kit warns about it at the end of the build.
 - Set `experimental.collectionMetadata` to `false`.
 
 ## Feedback

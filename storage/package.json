@@ -9,9 +9,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/collection-storage-sqlite": "https://pkg.pr.new/withastro/astro/@astrojs/collection-storage-sqlite@18583",
-    "@astrojs/node": "https://pkg.pr.new/withastro/astro/@astrojs/node@18583",
+    "@astrojs/collection-storage-sqlite": "https://pkg.pr.new/withastro/astro/@astrojs/collection-storage-sqlite@18632",
+    "@astrojs/node": "https://pkg.pr.new/withastro/astro/@astrojs/node@18632",
     "@libsql/client": "^0.18.0",
-    "astro": "https://pkg.pr.new/withastro/astro@18583"
+    "astro": "https://pkg.pr.new/withastro/astro@18632"
   }
 }
