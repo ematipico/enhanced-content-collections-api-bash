@@ -1,0 +1,26 @@
+---
+import { render } from 'astro:content';
+import { getDocsCollections } from '../../docs-kit/collections';
+
+export async function getStaticPaths() {
+  const docs = await getDocsCollections();
+  return docs.flatMap(({ name, entries }) =>
+    entries.map((entry) => ({ params: { collection: name, id: entry.id }, props: { entry } })),
+  );
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{entry.data.title}</title>
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <h1>{entry.data.title}</h1>
+    <Content />
+  </body>
+</html>

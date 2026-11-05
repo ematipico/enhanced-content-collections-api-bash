@@ -1,0 +1,24 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', undefined, { content: false });
+  return posts.map((post) => ({ params: { id: post.id } }));
+}
+
+const entry = (await getEntry('blog', Astro.params.id))!;
+const { Content } = await render(entry);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{entry.data.title}</title>
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <h1>{entry.data.title}</h1>
+    <p>{entry.data.date.toDateString()}</p>
+    <Content />
+  </body>
+</html>

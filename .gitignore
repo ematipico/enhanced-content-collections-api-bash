@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+*.db
+*.db-journal
+.env
+.DS_Store
+
+# The preview builds change with every commit pushed to their pull request
+package-lock.json

@@ -1,0 +1,35 @@
+---
+import { getCollectionsMetadata } from 'astro:content';
+import { getDocsCollections } from '../docs-kit/collections';
+
+const metadata = await getCollectionsMetadata();
+const docs = await getDocsCollections();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Collection metadata</title>
+  </head>
+  <body>
+    <h1>Collection metadata</h1>
+
+    <h2><code>getCollectionsMetadata()</code></h2>
+    <pre>{JSON.stringify(metadata, null, 2)}</pre>
+    <p><a href="/releases/">Releases</a> (live collection)</p>
+
+    <h2>Collections found by docs-kit</h2>
+    {
+      docs.map(({ name, entries }) => (
+        <section>
+          <h3>{name}</h3>
+          <ul>
+            {entries.map((entry) => (
+              <li><a href={`/${name}/${entry.id}/`}>{entry.data.title}</a></li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </body>
+</html>

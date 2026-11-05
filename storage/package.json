@@ -1,0 +1,16 @@
+{
+  "name": "collection-storage-bug-bash",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/collection-storage-sqlite": "https://pkg.pr.new/withastro/astro/@astrojs/collection-storage-sqlite@18583",
+    "@astrojs/node": "https://pkg.pr.new/withastro/astro/@astrojs/node@18583",
+    "astro": "https://pkg.pr.new/withastro/astro@18583"
+  }
+}

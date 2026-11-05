@@ -1,0 +1,21 @@
+---
+import { getEntry, render } from 'astro:content';
+
+export const prerender = false;
+
+const entry = await getEntry('docs', Astro.params.id!);
+if (!entry) return new Response('Not found', { status: 404 });
+const { Content } = await render(entry);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{entry.data.title}</title>
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <h1>{entry.data.title}</h1>
+    <Content />
+  </body>
+</html>

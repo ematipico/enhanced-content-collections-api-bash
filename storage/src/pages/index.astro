@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+
+// Rendered on demand, so the server reads `docs` from SQLite at request time.
+export const prerender = false;
+
+// `content: false` leaves out `body` and `rendered`, so the driver only loads the data.
+const docs = (await getCollection('docs', undefined, { content: false })).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const posts = await getCollection('blog', undefined, { content: false });
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Collection storage drivers</title>
+  </head>
+  <body>
+    <h1>Collection storage drivers</h1>
+
+    <h2>Docs (SQLite, rendered on demand)</h2>
+    <ul>
+      {docs.map((doc) => <li><a href={`/docs/${doc.id}/`}>{doc.data.title}</a></li>)}
+    </ul>
+
+    <h2>Blog (bundled, prerendered)</h2>
+    <ul>
+      {posts.map((post) => <li><a href={`/blog/${post.id}/`}>{post.data.title}</a></li>)}
+    </ul>
+  </body>
+</html>

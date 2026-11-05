@@ -1,0 +1,20 @@
+---
+import { getLiveCollection } from 'astro:content';
+
+// Live collections are loaded at request time.
+export const prerender = false;
+
+const { entries = [] } = await getLiveCollection('releases');
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Releases</title>
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <h1>Releases (live collection)</h1>
+    <ul>{entries.map((release) => <li>{release.id}: {release.data.title}</li>)}</ul>
+  </body>
+</html>
