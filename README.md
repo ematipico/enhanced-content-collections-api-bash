@@ -38,7 +38,7 @@ Things to try:
 - Store a collection in a remote [Turso](https://turso.tech) database: `sqlite({ url: 'libsql://…', authTokenEnv: 'TURSO_TOKEN' })`. The token must be in the environment of the process: a `.env` file isn't enough.
 - Write your own driver, and check it with `createStorageDriverTests()` from `astro/content/storage-driver-tests`.
 
-`@libsql/client` is a direct dependency to work around a bug in the preview: the production server bundles the driver, and with pnpm it can't load the native SQLite binding otherwise. pnpm also warns about an unmet `astro` peer: the preview of the driver expects the version of Astro it will be released with.
+`@libsql/client` is a direct dependency, as the driver requires: the production server only leaves it out of the bundle when it can find it from the project, and libSQL can't load its native binding from a bundle. pnpm also warns about an unmet `astro` peer: the preview of the driver expects the version of Astro it will be released with.
 
 ## `metadata/`: collection metadata
 
