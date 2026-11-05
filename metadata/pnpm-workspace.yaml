@@ -1,0 +1,2 @@
+# The preview builds of the #18596 stack depend on each other through pkg.pr.new URLs.
+blockExoticSubdeps: false

@@ -12,13 +12,13 @@ The apps are independent: each has its own dependencies, so install and run them
 ```sh
 git clone https://github.com/ematipico/enhanced-content-collections-bug-bash.git
 cd enhanced-content-collections-bug-bash/storage   # or metadata
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-Both apps need Node 22.23.4 or later and the Node adapter, so pages that opt out of prerendering run on demand. To try a production build, run `npm run build` and then `npm run preview`.
+Both apps need Node 22.23.4 or later and [pnpm](https://pnpm.io/installation), and use the Node adapter, so pages that opt out of prerendering run on demand. To try a production build, run `pnpm build` and then `pnpm preview`.
 
-To pick up new commits pushed to a pull request, reinstall: `rm -rf node_modules package-lock.json && npm install`.
+To pick up new commits pushed to a pull request, reinstall: `rm -rf node_modules pnpm-lock.yaml && pnpm install`.
 
 ## `storage/`: collection storage drivers
 
@@ -31,14 +31,14 @@ Collections can keep their entries in a storage driver, read one entry at a time
 
 Things to try:
 
-- Edit a page in `src/docs/` while `npm run dev` runs. Each change is written to a new snapshot.
+- Edit a page in `src/docs/` while `pnpm dev` runs. Each change is written to a new snapshot.
 - Look inside the database: `sqlite3 collections.db "select * from astro_collection_snapshots"`.
-- Run `npm run build`, change a doc, build again, and check that each build's server only reads its own snapshot.
+- Run `pnpm build`, change a doc, build again, and check that each build's server only reads its own snapshot.
 - Pass `render()` an entry read with `{ content: false }`.
 - Store a collection in a remote [Turso](https://turso.tech) database: `sqlite({ url: 'libsql://…', authTokenEnv: 'TURSO_TOKEN' })`. The token must be in the environment of the process: a `.env` file isn't enough.
 - Write your own driver, and check it with `createStorageDriverTests()` from `astro/content/storage-driver-tests`.
 
-`.npmrc` sets `legacy-peer-deps`, because the preview of the SQLite driver expects the version of Astro it will be released with.
+`@libsql/client` is a direct dependency to work around a bug in the preview: the production server bundles the driver, and with pnpm it can't load the native SQLite binding otherwise. pnpm also warns about an unmet `astro` peer: the preview of the driver expects the version of Astro it will be released with.
 
 ## `metadata/`: collection metadata
 
@@ -53,6 +53,7 @@ The rest of the project:
 
 - `src/content.config.ts`: `guides` and `reference` use the docs-kit loader, and `reference` adds descriptors of its own. `blog` and `authors` are unrelated collections.
 - `src/live.config.ts`: a live collection with descriptors.
+- `pnpm-workspace.yaml`: lets pnpm install the preview packages, which depend on each other through URLs.
 - `src/pages/index.astro`: prints `getCollectionsMetadata()` and links the pages of the docs-kit collections.
 - `src/pages/[collection]/[id].astro`: a page for each entry of every docs-kit collection, whatever the collection's name.
 
