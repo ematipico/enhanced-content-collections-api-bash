@@ -8,6 +8,7 @@ export const prerender = false;
 const docs = (await getCollection({ name: 'docs', content: false })).sort(
   (a, b) => a.data.order - b.data.order,
 );
+const notes = await getCollection({ name: 'notes', content: false });
 const posts = await getCollection({ name: 'blog', content: false });
 ---
 
@@ -22,6 +23,11 @@ const posts = await getCollection({ name: 'blog', content: false });
     <h2>Docs (SQLite, rendered on demand)</h2>
     <ul>
       {docs.map((doc) => <li><a href={`/docs/${doc.id}/`}>{doc.data.title}</a></li>)}
+    </ul>
+
+    <h2>Notes (JSON files, rendered on demand)</h2>
+    <ul>
+      {notes.map((note) => <li><a href={`/notes/${note.id}/`}>{note.data.title}</a></li>)}
     </ul>
 
     <h2>Blog (bundled, prerendered)</h2>

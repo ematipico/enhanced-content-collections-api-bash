@@ -16,6 +16,27 @@ const reference = defineCollection({
   descriptors: { section: 'reference', audience: ['contributors'] },
 });
 
+// A custom loader rendering its own Markdown. Its descriptors make it a docs-kit collection,
+// so docs-kit gives it pages and a banner, and checks it after builds, without knowing its name.
+const changelog = defineCollection({
+  loader: {
+    name: 'changelog-loader',
+    load: async ({ store, renderMarkdown }) => {
+      const releases = [
+        { id: '1-1-0', title: 'Version 1.1', notes: 'Adds **collection metadata**.' },
+        { id: '1-0-0', title: 'Version 1.0', notes: 'The first release.' },
+      ];
+      store.clear();
+      for (const { id, title, notes } of releases) {
+        // Markdown plugins see the collection of entries rendered with `renderMarkdown()`
+        store.set({ id, data: { title }, rendered: await renderMarkdown(notes) });
+      }
+    },
+  },
+  schema: z.object({ title: z.string() }),
+  descriptors: { docsKit: 'docs', section: 'changelog' },
+});
+
 // Not a docs-kit collection: no descriptors.
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
@@ -28,4 +49,4 @@ const authors = defineCollection({
   schema: z.object({ name: z.string() }),
 });
 
-export const collections = { guides, reference, blog, authors };
+export const collections = { guides, reference, changelog, blog, authors };

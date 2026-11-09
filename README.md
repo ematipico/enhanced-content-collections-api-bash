@@ -24,22 +24,26 @@ To pick up new commits pushed to a pull request, reinstall: `rm -rf node_modules
 
 Collections can keep their entries in a storage driver, read one entry at a time, instead of in the data store bundled with the site.
 
-- `src/content.config.ts`: the `docs` collection is stored in a local SQLite file, `collections.db`, by `@astrojs/collection-storage-sqlite`. The `blog` collection has no `storage`, so it stays bundled.
-- `src/pages/index.astro`: rendered on demand. It lists both collections with `{ content: false }`, which leaves out `body` and `rendered`.
+- `src/content.config.ts`: the `docs` collection is stored in a local SQLite file, `collections.db`, by `@astrojs/collection-storage-sqlite`. The `notes` collection is stored in `json-storage/` by the project's own driver. The `blog` collection has no `storage`, so it stays bundled.
+- `src/drivers/json-files/`: a collection storage driver written in the project. `index.ts` exports `jsonFiles()`, which returns the storage descriptor, and `driver.ts` implements the whole driver contract: `createSnapshotId()`, `openWriter()`, `openReader()`, `listSnapshots()` and `deleteSnapshot()`.
+- `test/json-files-driver.test.ts`: runs `createStorageDriverTests()` from `astro/content/storage-driver-tests` against that driver. Run it with `pnpm test`.
+- `src/pages/index.astro`: rendered on demand. It lists every collection with `getCollection({ name, content: false })`, which leaves out `body` and `rendered`.
 - `src/pages/docs/[id].astro`: rendered on demand, reading one entry from SQLite.
+- `src/pages/notes/[id].astro`: rendered on demand, reading a note from its JSON file, and its related docs from SQLite with `getEntries(note.data.related, { content: false })`.
 - `src/pages/blog/[id].astro`: prerendered. `getStaticPaths()` lists the posts with `getCollection({ name: 'blog', content: false })`.
-- `src/integrations/keep-snapshots.mjs`: an integration that keeps the 3 most recent build snapshots, and deletes older ones in the `astro:build:done` hook, through `collections.storage`.
+- `src/integrations/keep-snapshots.mjs`: an integration that keeps the 3 most recent build snapshots of each driver, and deletes older ones in the `astro:build:done` hook, through `collections.storage`. It also logs the snapshot each build wrote, and `readAtRuntime`.
 
 Things to try:
 
-- Edit a page in `src/docs/` while `pnpm dev` runs. The dev server writes a single snapshot, again after each change.
+- Edit a page in `src/docs/` or `src/notes/` while `pnpm dev` runs. The dev server writes a single snapshot per driver, again after each change: watch `json-storage/`.
 - Look inside the database: `sqlite3 collections.db "select * from astro_collection_snapshots"`.
 - Run `pnpm build`, change a doc, build again, and check that each build's server only reads its own snapshot.
 - Build more than 3 times, and check that `keep-snapshots` deletes the oldest build snapshots, but never the dev server's.
 - Make `keep-snapshots` delete the snapshot the build just wrote (`storage.snapshot`): Astro refuses, as the server reads it.
 - Pass `render()` an entry read with `{ content: false }`.
 - Store a collection in a remote [Turso](https://turso.tech) database: `sqlite({ url: 'libsql://…', authTokenEnv: 'TURSO_TOKEN' })`. The driver reads the token with `getSecret()` from `astro:env/server`, so at build time it can come from a `.env` file.
-- Write your own driver, and check it with `createStorageDriverTests()` from `astro/content/storage-driver-tests`.
+- Break the JSON files driver, for example make `commit()` a no-op or ignore `content: false`, and run `pnpm test`.
+- Write your own driver, starting from `src/drivers/json-files/`.
 
 `@libsql/client` is a direct dependency, as the driver requires: the production server only leaves it out of the bundle when it can find it from the project, and libSQL can't load its native binding from a bundle. pnpm also warns about an unmet `astro` peer: the preview of the driver expects the version of Astro it will be released with.
 
@@ -54,8 +58,8 @@ Code can recognize a collection by its descriptors without knowing its name. Tha
 
 The rest of the project:
 
-- `src/content.config.ts`: `guides` and `reference` use the docs-kit loader, and `reference` adds descriptors of its own. `blog` and `authors` are unrelated collections.
-- `src/live.config.ts`: a live collection with descriptors.
+- `src/content.config.ts`: `guides` and `reference` use the docs-kit loader, and `reference` adds descriptors of its own. `changelog` has its own loader, which renders its Markdown with `renderMarkdown()`, and becomes a docs-kit collection through the `descriptors` option alone. `blog` and `authors` are unrelated collections.
+- `src/live.config.ts`: a live collection whose descriptors come from its loader and from `defineLiveCollection()`.
 - `pnpm-workspace.yaml`: lets pnpm install the preview packages, which depend on each other through URLs.
 - `src/pages/index.astro`: prints `getCollectionsMetadata()` and links the pages of the docs-kit collections.
 - `src/pages/[collection]/[id].astro`: a page for each entry of every docs-kit collection, whatever the collection's name.

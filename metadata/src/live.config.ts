@@ -14,5 +14,6 @@ const releasesLoader: LiveLoader<{ title: string }, { id: string }> = {
 };
 
 export const collections = {
-  releases: defineLiveCollection({ loader: releasesLoader }),
+  // Descriptors from the config are merged with the loader's
+  releases: defineLiveCollection({ loader: releasesLoader, descriptors: { featured: true } }),
 };

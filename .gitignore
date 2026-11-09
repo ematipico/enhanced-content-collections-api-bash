@@ -8,3 +8,6 @@ dist/
 
 # The preview builds change with every commit pushed to their pull request
 pnpm-lock.yaml
+
+# Snapshots written by the JSON files driver
+json-storage/

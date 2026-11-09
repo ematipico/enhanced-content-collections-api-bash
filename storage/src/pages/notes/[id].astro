@@ -1,0 +1,28 @@
+---
+import { getEntries, getEntry, render } from 'astro:content';
+
+// Rendered on demand, so the server reads the note from its JSON file at request time.
+export const prerender = false;
+
+const note = await getEntry('notes', Astro.params.id!);
+if (!note) return new Response('Not found', { status: 404 });
+const { Content } = await render(note);
+// References to another stored collection, read without their content
+const related = await getEntries(note.data.related, { content: false });
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{note.data.title}</title>
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <h1>{note.data.title}</h1>
+    <Content />
+    <h2>Related docs</h2>
+    <ul>
+      {related.map((doc) => <li><a href={`/docs/${doc.id}/`}>{doc.data.title}</a></li>)}
+    </ul>
+  </body>
+</html>

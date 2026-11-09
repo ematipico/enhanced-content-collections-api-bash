@@ -9,6 +9,9 @@ export default function keepSnapshots({ keep = 3 } = {}) {
     hooks: {
       'astro:build:done': async ({ collections, logger }) => {
         for (const storage of collections.storage ?? []) {
+          logger.info(
+            `${storage.collections.join(', ')}: wrote snapshot ${storage.snapshot}, read at runtime: ${storage.readAtRuntime}`,
+          );
           if (!storage.listSnapshots || !storage.deleteSnapshot) continue;
           const builds = (await storage.listSnapshots())
             .filter((snapshot) => !snapshot.dev)
