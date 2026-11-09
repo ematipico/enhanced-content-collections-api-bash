@@ -11,7 +11,7 @@
   "dependencies": {
     "@astrojs/markdown-remark": "https://pkg.pr.new/@astrojs/markdown-remark@18633",
     "@astrojs/mdx": "https://pkg.pr.new/@astrojs/mdx@18633",
-    "@astrojs/node": "https://pkg.pr.new/@astrojs/node@18633",
+    "@astrojs/node": "^11.1.11",
     "astro": "https://pkg.pr.new/astro@18633"
   }
 }
