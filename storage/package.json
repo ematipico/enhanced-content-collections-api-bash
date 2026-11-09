@@ -1,5 +1,5 @@
 {
-  "name": "collection-storage-bug-bash",
+  "name": "collection-storage-api-bash",
   "type": "module",
   "private": true,
   "scripts": {

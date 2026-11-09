@@ -1,5 +1,5 @@
 {
-  "name": "collection-metadata-bug-bash",
+  "name": "collection-metadata-api-bash",
   "type": "module",
   "private": true,
   "scripts": {

@@ -1,4 +1,4 @@
-# Enhanced content collections bug bash
+# Enhanced content collections API bash
 
 Two small Astro apps to try the experimental features of the [enhanced content collections RFC](https://github.com/withastro/roadmap/pull/1459) before they're released. Each app installs a preview build of Astro from the last pull request of a feature's stack, so it always runs the latest commit of that stack.
 
@@ -10,8 +10,8 @@ Two small Astro apps to try the experimental features of the [enhanced content c
 The apps are independent: each has its own dependencies, so install and run them one at a time.
 
 ```sh
-git clone https://github.com/ematipico/enhanced-content-collections-bug-bash.git
-cd enhanced-content-collections-bug-bash/storage   # or metadata
+git clone https://github.com/ematipico/enhanced-content-collections-api-bash.git
+cd enhanced-content-collections-api-bash/storage   # or metadata
 pnpm install
 pnpm dev
 ```
