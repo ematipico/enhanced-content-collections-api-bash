@@ -2,7 +2,7 @@ import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import node from '@astrojs/node';
 import { defineConfig } from 'astro/config';
-import docsKit from './src/docs-kit/integration.mjs';
+import docsKit from './src/docs-kit/integration.ts';
 import { remarkDocsKit } from './src/docs-kit/remark.mjs';
 
 export default defineConfig({

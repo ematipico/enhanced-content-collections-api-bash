@@ -31,7 +31,7 @@ Collections can keep their entries in a storage driver, read one entry at a time
 - `src/pages/docs/[id].astro`: rendered on demand, reading one entry from SQLite.
 - `src/pages/notes/[id].astro`: rendered on demand, reading a note from its JSON file, and its related docs from SQLite with `getEntries(note.data.related, { content: false })`.
 - `src/pages/blog/[id].astro`: prerendered. `getStaticPaths()` lists the posts with `getCollection({ name: 'blog', content: false })`.
-- `src/integrations/keep-snapshots.mjs`: an integration that keeps the 3 most recent build snapshots of each driver, and deletes older ones in the `astro:build:done` hook, through `collections.storage`. It also logs the snapshot each build wrote, and `readAtRuntime`.
+- `src/integrations/keep-snapshots.ts`: an integration that keeps the 3 most recent build snapshots of each driver, and deletes older ones in the `astro:build:done` hook, through `collections.storage`. It also logs the snapshot each build wrote, and `readAtRuntime`.
 
 Things to try:
 
@@ -52,7 +52,7 @@ Things to try:
 Code can recognize a collection by its descriptors without knowing its name. That's useful for libraries that ship their own loaders. The app contains a tiny imaginary library, "docs-kit", in `src/docs-kit/`:
 
 - `loader.ts`: a loader declaring the descriptor `{ docsKit: 'docs' }`.
-- `integration.mjs`: logs the docs-kit collections from the `astro:collections:resolved` hook, at startup and when the content config changes. After a build, it reads their entries in the `astro:build:done` hook, with `collections.entries()`, and warns about pages sharing a title.
+- `integration.ts`: logs the docs-kit collections from the `astro:collections:resolved` hook, at startup and when the content config changes. After a build, it reads their entries in the `astro:build:done` hook, with `collections.entries()`, and warns about pages sharing a title.
 - `remark.mjs`: a remark plugin that reads `file.data.astro.collection` and adds a banner to docs-kit entries, both Markdown and MDX.
 - `collections.ts`: finds the docs-kit collections with `getCollectionsMetadata()`, using a type guard so their entries are typed.
 

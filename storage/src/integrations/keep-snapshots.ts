@@ -1,9 +1,11 @@
+import type { AstroIntegration } from 'astro';
+
 /**
  * Deletes the snapshots of earlier builds at the end of each build, keeping the `keep` most
  * recent ones. Astro never deletes snapshots itself, as it can't know which ones deployed
  * servers still read.
  */
-export default function keepSnapshots({ keep = 3 } = {}) {
+export default function keepSnapshots({ keep = 3 }: { keep?: number } = {}): AstroIntegration {
   return {
     name: 'keep-snapshots',
     hooks: {
