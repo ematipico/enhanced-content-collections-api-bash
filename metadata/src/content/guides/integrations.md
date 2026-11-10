@@ -109,3 +109,11 @@ A few things to know:
 - Images and references to other entries aren't resolved, and you can't render the entries.
 - Pass `{ content: false }` when you only need the data, like titles: you skip the text and HTML.
 - Each call reads one collection from disk and keeps nothing afterwards, so it doesn't fill up memory. Read the collections you need one at a time.
+
+## Coming later: reading from the storage driver
+
+Today, `entries()` reads every collection from the copy of your entries that the build keeps on disk, including the collections kept in a database or in files by a storage driver (the other feature, shown in the `storage/` app).
+
+For those collections, `entries()` could read the build's copy straight from the driver instead. Then `{ content: false }` would reach the driver too, and it could skip loading the text and HTML altogether, for example by not even reading that column from the database.
+
+That needs both features, collection metadata and storage drivers, in Astro at the same time, so it will come once both are merged. It's listed as an open question in the [RFC](https://github.com/withastro/roadmap/pull/1459).
