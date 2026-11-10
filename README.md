@@ -7,7 +7,7 @@ Two small Astro apps to try the experimental features of the [enhanced content c
 | [`storage/`](./storage) | Collection storage drivers | `experimental.collectionStorageDrivers` | [withastro/astro#18632](https://github.com/withastro/astro/pull/18632) |
 | [`metadata/`](./metadata) | Collection metadata | `experimental.collectionMetadata` | [withastro/astro#18633](https://github.com/withastro/astro/pull/18633) |
 
-The apps are independent: each has its own dependencies, so install and run them one at a time.
+The apps are independent, and both start from Astro's minimal template (`pnpm create astro --template minimal`). Each has its own dependencies, so install and run them one at a time.
 
 ```sh
 git clone https://github.com/ematipico/enhanced-content-collections-api-bash.git
