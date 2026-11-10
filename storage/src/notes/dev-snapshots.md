@@ -3,4 +3,4 @@ title: Snapshots in development
 related: [snapshots]
 ---
 
-A dev server writes a single snapshot, and writes it again after each change. Look at `json-storage/` while `pnpm dev` runs.
+Development has a single snapshot, `dev`. Every dev session writes it again after each change. Look at `json-storage/` while `pnpm dev` runs: `dev.commit.json` and `dev.entries.json` change, and no other file appears.
