@@ -37,7 +37,30 @@ const reference = defineCollection({
 // }
 ```
 
-When both set the same label, the collection's config wins. A collection doesn't even need docs-kit's loader to get its labels: `changelog` has its own loader, and becomes a docs-kit collection only because its config adds `docsKit: 'docs'`.
+When both set the same label, the collection's config wins, and the labels set on only one side are kept:
+
+```ts
+// A loader that sets two labels
+const loader: Loader<{ docsKit: 'docs'; version: number }> = {
+  name: 'docs-kit',
+  descriptors: { docsKit: 'docs', version: 1 },
+  load: async () => {},
+};
+
+// A collection that sets docsKit too, with another value, and one more label
+const api = defineCollection({
+  loader,
+  descriptors: { docsKit: 'api', section: 'api' },
+});
+
+// getCollectionsMetadata() returns:
+// descriptors: { docsKit: 'api', version: 1, section: 'api' }
+//   docsKit comes from the collection, version from the loader, section from the collection
+```
+
+Only the top level is merged. If both sides set `docsKit` to an object, like `{ kind: 'docs' }` and `{ section: 'api' }`, the collection's object replaces the loader's whole object: the result is `{ section: 'api' }`.
+
+A collection doesn't even need docs-kit's loader to get its labels: `changelog` has its own loader, and becomes a docs-kit collection only because its config adds `docsKit: 'docs'`.
 
 ## What a label can hold
 
