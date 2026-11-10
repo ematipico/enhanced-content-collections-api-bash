@@ -72,6 +72,7 @@ The app contains a tiny made-up library, "docs-kit", in `src/docs-kit/`:
 
 The rest of the app:
 
+- `src/content/guides/`: four short guides on how collection metadata works: what it is, labels, integrations and Markdown plugins. Start with these: run `pnpm dev` and open them from the home page.
 - `src/content.config.ts`: the collections.
   - `guides` and `reference` use docs-kit's loader. `reference` also adds labels of its own.
   - `changelog` has its own loader, which turns its Markdown into HTML with `renderMarkdown()`. It becomes a docs-kit collection only because its config adds the `docsKit` label.

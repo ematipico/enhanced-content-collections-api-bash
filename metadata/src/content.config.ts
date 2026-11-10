@@ -6,7 +6,7 @@ import { docsLoader } from './docs-kit/loader';
 // The loader's descriptors: { docsKit: 'docs' }
 const guides = defineCollection({
   loader: docsLoader('./src/content/guides'),
-  schema: z.object({ title: z.string() }),
+  schema: z.object({ title: z.string(), order: z.number() }),
 });
 
 // Descriptors from the config are merged with the loader's, and win on conflicts.

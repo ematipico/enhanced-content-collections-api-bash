@@ -1,0 +1,35 @@
+---
+title: Markdown plugins
+order: 4
+---
+
+export const plugins = ['remark', 'rehype', 'Sätteri'];
+
+Markdown plugins ({plugins.join(', ')}) can tell which collection the page they're working on belongs to. The coloured banner on this page comes from docs-kit's plugin, in `src/docs-kit/remark.mjs`, which only adds it to docs-kit pages.
+
+## How a plugin knows
+
+The plugin finds the collection's metadata in `file.data.astro.collection` (`ctx.data.astro.collection` in Sätteri), with its name, type, loader and labels:
+
+```js
+export function remarkDocsKit() {
+  return (tree, file) => {
+    const collection = file.data.astro?.collection;
+    if (collection?.descriptors.docsKit !== 'docs') return;
+    // add the banner…
+  };
+}
+```
+
+## When it's set
+
+- Markdown files loaded with `glob()`, like the guides.
+- Markdown turned into HTML by a loader with `renderMarkdown()`, like the changelog.
+- MDX files, like this page, which is MDX.
+- Markdown loaded with `deferRender: true`.
+
+## When it's `undefined`
+
+- Markdown that isn't part of a collection.
+- A file used by more than one collection: Astro turns it into HTML once for all of them, so it can't pick one.
+- Live collections, whose loaders turn their own content into HTML.

@@ -6,7 +6,14 @@ import Layout from '../layouts/Layout.astro';
 const metadata = await getCollectionsMetadata();
 // The index lists the titles of the docs-kit pages, so it reads their entries
 const docs = await Promise.all(
-  (await getDocsCollections()).map(async ({ name }) => ({ name, entries: await getCollection(name) })),
+  (await getDocsCollections()).map(async ({ name }) => {
+    const entries = await getCollection(name);
+    // Guides have an order, the other collections are listed as loaded
+    entries.sort((a, b) =>
+      'order' in a.data && 'order' in b.data ? a.data.order - b.data.order : 0,
+    );
+    return { name, entries };
+  }),
 );
 ---
 
