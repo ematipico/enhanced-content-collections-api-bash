@@ -1,5 +1,6 @@
 ---
 import { getLiveCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
 
 // Live collections are loaded at request time.
 export const prerender = false;
@@ -7,18 +8,10 @@ export const prerender = false;
 const { entries = [] } = await getLiveCollection('releases');
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Releases</title>
-  </head>
-  <body>
-    <a href="/">Home</a>
-    <h1>Releases (live collection)</h1>
+<Layout title="Releases">
+  <section class="box">
+    <h1>Releases</h1>
+    <p>A live collection, loaded at request time.</p>
     <ul>{entries.map((release) => <li>{release.id}: {release.data.title}</li>)}</ul>
-  </body>
-</html>
+  </section>
+</Layout>

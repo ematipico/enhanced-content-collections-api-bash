@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
 
 // Rendered on demand, so the server reads `docs` from SQLite at request time.
 export const prerender = false;
@@ -12,31 +13,27 @@ const notes = await getCollection({ name: 'notes', content: false });
 const posts = await getCollection({ name: 'blog', content: false });
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Collection storage drivers</title>
-  </head>
-  <body>
-    <h1>Collection storage drivers</h1>
+<Layout title="Collection storage drivers">
+  <h1>Collection storage drivers</h1>
 
-    <h2>Docs (SQLite, rendered on demand)</h2>
+  <section class="box">
+    <h2>Docs <code>SQLite</code>, rendered on demand</h2>
     <ul>
-      {docs.map((doc) => <li><a href={`/docs/${doc.id}/`}>{doc.data.title}</a></li>)}
+      {docs.map((item) => <li><a href={`/docs/${item.id}/`}>{item.data.title}</a></li>)}
     </ul>
+  </section>
 
-    <h2>Notes (JSON files, rendered on demand)</h2>
+  <section class="box">
+    <h2>Notes <code>JSON files</code>, rendered on demand</h2>
     <ul>
-      {notes.map((note) => <li><a href={`/notes/${note.id}/`}>{note.data.title}</a></li>)}
+      {notes.map((item) => <li><a href={`/notes/${item.id}/`}>{item.data.title}</a></li>)}
     </ul>
+  </section>
 
-    <h2>Blog (bundled, prerendered)</h2>
+  <section class="box">
+    <h2>Blog <code>bundled</code>, prerendered</h2>
     <ul>
-      {posts.map((post) => <li><a href={`/blog/${post.id}/`}>{post.data.title}</a></li>)}
+      {posts.map((item) => <li><a href={`/blog/${item.id}/`}>{item.data.title}</a></li>)}
     </ul>
-  </body>
-</html>
+  </section>
+</Layout>

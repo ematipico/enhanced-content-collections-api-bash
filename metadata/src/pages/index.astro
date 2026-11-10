@@ -1,6 +1,7 @@
 ---
 import { getCollection, getCollectionsMetadata } from 'astro:content';
 import { getDocsCollections } from '../docs-kit/collections';
+import Layout from '../layouts/Layout.astro';
 
 const metadata = await getCollectionsMetadata();
 // The index lists the titles of the docs-kit pages, so it reads their entries
@@ -9,34 +10,31 @@ const docs = await Promise.all(
 );
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Collection metadata</title>
-  </head>
-  <body>
-    <h1>Collection metadata</h1>
+<Layout title="Collection metadata">
+  <h1>Collection metadata</h1>
 
-    <h2><code>getCollectionsMetadata()</code></h2>
-    <pre>{JSON.stringify(metadata, null, 2)}</pre>
-    <p><a href="/releases/">Releases</a> (live collection)</p>
-
+  <section class="box">
     <h2>Collections found by docs-kit</h2>
     {
       docs.map(({ name, entries }) => (
-        <section>
+        <>
           <h3>{name}</h3>
           <ul>
             {entries.map((entry) => (
               <li><a href={`/${name}/${entry.id}/`}>{entry.data.title}</a></li>
             ))}
           </ul>
-        </section>
+        </>
       ))
     }
-  </body>
-</html>
+  </section>
+
+  <section class="box">
+    <h2><a href="/releases/">Releases</a>, a live collection</h2>
+  </section>
+
+  <section class="box">
+    <h2><code>getCollectionsMetadata()</code></h2>
+    <pre>{JSON.stringify(metadata, null, 2)}</pre>
+  </section>
+</Layout>

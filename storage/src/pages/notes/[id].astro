@@ -1,5 +1,6 @@
 ---
 import { getEntries, getEntry, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
 
 // Rendered on demand, so the server reads the note from its JSON file at request time.
 export const prerender = false;
@@ -11,22 +12,16 @@ const { Content } = await render(note);
 const related = await getEntries(note.data.related, { content: false });
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{note.data.title}</title>
-  </head>
-  <body>
-    <a href="/">Home</a>
+<Layout title={note.data.title}>
+  <article class="box">
     <h1>{note.data.title}</h1>
     <Content />
+  </article>
+
+  <section class="box">
     <h2>Related docs</h2>
     <ul>
-      {related.map((doc) => <li><a href={`/docs/${doc.id}/`}>{doc.data.title}</a></li>)}
+      {related.map((item) => <li><a href={`/docs/${item.id}/`}>{item.data.title}</a></li>)}
     </ul>
-  </body>
-</html>
+  </section>
+</Layout>

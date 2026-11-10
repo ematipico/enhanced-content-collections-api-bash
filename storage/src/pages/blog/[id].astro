@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection({ name: 'blog', content: false });
@@ -10,19 +11,10 @@ const entry = (await getEntry('blog', Astro.params.id))!;
 const { Content } = await render(entry);
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{entry.data.title}</title>
-  </head>
-  <body>
-    <a href="/">Home</a>
+<Layout title={entry.data.title}>
+  <article class="box">
     <h1>{entry.data.title}</h1>
     <p>{entry.data.date.toDateString()}</p>
     <Content />
-  </body>
-</html>
+  </article>
+</Layout>
