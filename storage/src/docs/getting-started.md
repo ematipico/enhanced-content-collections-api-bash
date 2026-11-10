@@ -3,6 +3,6 @@ title: Getting started
 order: 1
 ---
 
-This page is stored in `collections.db` and read from it when you request it.
+This page doesn't live inside your site's code. It's saved in a small database file, `collections.db`, and Astro reads it from there each time someone opens the page.
 
-Edit it while `astro dev` runs: the change is written to the `dev` snapshot, which every dev session shares.
+Try editing this file while `pnpm dev` is running: the page updates, because Astro saves your change to the database right away.

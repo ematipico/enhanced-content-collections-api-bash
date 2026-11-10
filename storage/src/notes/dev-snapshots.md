@@ -3,4 +3,6 @@ title: Snapshots in development
 related: [snapshots]
 ---
 
-Development has a single snapshot, `dev`. Every dev session writes it again after each change. Look at `json-storage/` while `pnpm dev` runs: `dev.commit.json` and `dev.entries.json` change, and no other file appears.
+In development there's a single saved copy of your entries, called `dev`, and Astro overwrites it every time you change something.
+
+You can watch it happen: open `json-storage/` while `pnpm dev` is running, and edit this note. Only `dev.commit.json` and `dev.entries.json` change, and no new files show up.

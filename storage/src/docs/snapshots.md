@@ -3,22 +3,22 @@ title: Snapshots
 order: 3
 ---
 
-A snapshot is the set of entries one storage driver keeps for a build, or for development.
+A snapshot is a saved copy of a collection's entries. Astro keeps one copy for each build, and one for development.
 
-## Builds
+## When you build
 
-Every build writes a new snapshot, which doesn't rely on any earlier one: it holds every entry of the collections kept with the driver. The server a build produces only reads that snapshot, so a later build never changes what a deployed server shows.
+Each build saves a fresh copy of all your entries, from scratch. The site that build creates only ever reads its own copy. So if you change your content and build again, a site that's already online keeps showing what it was built with, until you deploy the new build.
 
-The driver names build snapshots with `createSnapshotId()` when it implements it, like the JSON files driver's `build-…` IDs, or Astro gives them a random ID.
+Each copy gets a name. The JSON files driver in this project names them after the date, like `build-2026-11-09…`. Other drivers may use random names.
 
-## Development
+## In development
 
-Development has a single snapshot, called `dev`. Every `astro dev` session writes to it, and writes it again after each change, so it never piles up.
+There's only ever one copy, called `dev`. Every time you start `pnpm dev`, and every time you change something, Astro overwrites it. It never piles up.
 
 ## `astro sync` and `astro check`
 
-They load your collections to generate types, but write no snapshot: nothing would read it.
+These commands read your collections to generate TypeScript types, but they don't save any copy, because nothing would use it.
 
-## Deleting snapshots
+## Cleaning up
 
-Astro never deletes snapshots, as it can't know which ones deployed servers still read. Build snapshots stay in the storage until an integration deletes them: `keep-snapshots` keeps the 3 most recent ones of each driver, in the `astro:build:done` hook. It never deletes `dev`.
+Astro never deletes copies by itself: it can't know which ones a site that's online still needs. Old build copies stay until something deletes them. In this project, `keep-snapshots` keeps the last 3 builds and deletes older ones at the end of each build. It never touches `dev`.
