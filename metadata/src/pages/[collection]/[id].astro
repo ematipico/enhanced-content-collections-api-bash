@@ -1,15 +1,22 @@
 ---
-import { render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import { getDocsCollections } from '../../docs-kit/collections';
 
 export async function getStaticPaths() {
-  const docs = await getDocsCollections();
-  return docs.flatMap(({ name, entries }) =>
-    entries.map((entry) => ({ params: { collection: name, id: entry.id }, props: { entry } })),
-  );
+  const paths = [];
+  for (const { name } of await getDocsCollections()) {
+    // Only the IDs are needed here. With collection storage drivers, `getCollection({ name, content: false })`
+    // would also leave out the content of the entries.
+    for (const { id } of await getCollection(name)) {
+      paths.push({ params: { collection: name, id }, props: { collection: name, id } });
+    }
+  }
+  return paths;
 }
 
-const { entry } = Astro.props;
+// Each page reads its own entry, instead of receiving it from `getStaticPaths()`
+const { collection, id } = Astro.props;
+const entry = (await getEntry(collection, id))!;
 const { Content } = await render(entry);
 ---
 

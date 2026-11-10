@@ -54,7 +54,7 @@ Code can recognize a collection by its descriptors without knowing its name. Tha
 - `loader.ts`: a loader declaring the descriptor `{ docsKit: 'docs' }`.
 - `integration.ts`: logs the docs-kit collections from the `astro:collections:resolved` hook, at startup and when the content config changes. After a build, it reads their entries in the `astro:build:done` hook, with `collections.entries()`, and warns about pages sharing a title.
 - `remark.mjs`: a remark plugin that reads `file.data.astro.collection` and adds a banner to docs-kit entries, both Markdown and MDX.
-- `collections.ts`: finds the docs-kit collections with `getCollectionsMetadata()`, using a type guard so their entries are typed.
+- `collections.ts`: finds the docs-kit collections with `getCollectionsMetadata()`, without loading their entries. A type guard narrows them, so reading their entries is typed.
 
 The rest of the project:
 
@@ -62,7 +62,7 @@ The rest of the project:
 - `src/live.config.ts`: a live collection whose descriptors come from its loader and from `defineLiveCollection()`.
 - `pnpm-workspace.yaml`: lets pnpm install the preview packages, which depend on each other through URLs.
 - `src/pages/index.astro`: prints `getCollectionsMetadata()` and links the pages of the docs-kit collections.
-- `src/pages/[collection]/[id].astro`: a page for each entry of every docs-kit collection, whatever the collection's name.
+- `src/pages/[collection]/[id].astro`: a page for each entry of every docs-kit collection, whatever the collection's name. `getStaticPaths()` only returns the collection and ID of each page, and the page reads its own entry with `getEntry()`.
 
 Things to try:
 

@@ -1,9 +1,12 @@
 ---
-import { getCollectionsMetadata } from 'astro:content';
+import { getCollection, getCollectionsMetadata } from 'astro:content';
 import { getDocsCollections } from '../docs-kit/collections';
 
 const metadata = await getCollectionsMetadata();
-const docs = await getDocsCollections();
+// The index lists the titles of the docs-kit pages, so it reads their entries
+const docs = await Promise.all(
+  (await getDocsCollections()).map(async ({ name }) => ({ name, entries: await getCollection(name) })),
+);
 ---
 
 <html lang="en">
