@@ -10,7 +10,34 @@ Labels, called descriptors in the API, are small pieces of information attached 
 - **The loader.** A loader can label every collection that uses it. docs-kit's loader adds `{ docsKit: 'docs' }`.
 - **The collection's config.** `defineCollection()` and `defineLiveCollection()` take a `descriptors` option, to add labels or change the loader's.
 
-When both set the same label, the collection's config wins. In this app, `reference` uses docs-kit's loader and adds `section` and `audience`, and `changelog` doesn't use docs-kit's loader at all: it becomes a docs-kit collection only because its config adds `docsKit: 'docs'`.
+Here's how the `reference` collection of this app ends up with three labels, one from the loader and two from its config:
+
+```ts
+// src/docs-kit/loader.ts: docs-kit's loader labels every collection that uses it
+export function docsLoader(base: string): Loader<{ docsKit: 'docs' }> {
+  return {
+    ...glob({ pattern: '**/*.{md,mdx}', base }),
+    name: 'docs-kit',
+    descriptors: { docsKit: 'docs' },
+  };
+}
+
+// src/content.config.ts: the collection adds two labels of its own
+const reference = defineCollection({
+  loader: docsLoader('./src/content/reference'),
+  descriptors: { section: 'reference', audience: ['contributors'] },
+});
+
+// getCollectionsMetadata() returns all three:
+// {
+//   name: 'reference',
+//   type: 'build-time',
+//   loader: { name: 'docs-kit' },
+//   descriptors: { docsKit: 'docs', section: 'reference', audience: ['contributors'] },
+// }
+```
+
+When both set the same label, the collection's config wins. A collection doesn't even need docs-kit's loader to get its labels: `changelog` has its own loader, and becomes a docs-kit collection only because its config adds `docsKit: 'docs'`.
 
 ## What a label can hold
 
